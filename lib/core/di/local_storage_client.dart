@@ -28,7 +28,7 @@ class HiveLocalStorageClient implements LocalStorageClient {
       if (_boxes.containsKey(boxName)) {
         return _boxes[boxName]! as Box<T>;
       }
-      
+
       final box = await Hive.openBox<T>(boxName);
       _boxes[boxName] = box;
       return box;

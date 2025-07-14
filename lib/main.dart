@@ -5,10 +5,10 @@ import 'core/constants/app_constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize dependencies
   await DependencyInjection.init();
-  
+
   runApp(const MyApp());
 }
 
@@ -24,9 +24,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const Scaffold(
-        body: Center(
-          child: Text('Movie List App - Ready for Development'),
-        ),
+        body: Center(child: Text('Movie List App - Ready for Development')),
       ),
     );
   }
