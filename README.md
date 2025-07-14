@@ -1,16 +1,64 @@
-# movie_list_app
+# Movie List App
 
-A new Flutter project.
+A Flutter application for managing a list of movies with favorites functionality.
+
+## Architecture
+
+- **Clean Architecture** with separation of concerns
+- **GetX** for state management and navigation
+- **Hive** for local data persistence
+- **GetIt** for dependency injection
+
+## Project Structure
+
+```
+lib/
+├── core/
+│   ├── constants/          # App constants
+│   ├── di/                # Dependency injection
+│   └── error/             # Error handling
+├── data/
+│   ├── datasources/       # Data sources (local/remote)
+│   ├── models/           # Data models
+│   └── repositories/     # Repository implementations
+├── domain/
+│   ├── entities/         # Business entities
+│   ├── repositories/     # Repository interfaces
+│   └── usecases/        # Business logic
+└── presentation/
+    ├── controllers/      # GetX controllers
+    ├── pages/           # App screens
+    └── widgets/         # Reusable widgets
+```
+
+## Features (To be implemented)
+
+- [ ] View list of movies
+- [ ] Add new movies with validation
+- [ ] Mark/unmark movies as favorites
+- [ ] Delete movies
+- [ ] Local data persistence
+- [ ] Comprehensive testing
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. Clone the repository
+2. Run `flutter pub get`
+3. Run `flutter run`
 
-A few resources to get you started if this is your first Flutter project:
+## Dependencies
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- get: ^4.7.2 (State management)
+- hive_flutter: ^1.1.0 (Local storage)
+- get_it: ^8.0.3 (Dependency injection)
+- equatable: ^2.0.7 (Value equality)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Development Status
+
+✅ **Step 1: Project Setup** - COMPLETED
+- Core error handling
+- Constants setup
+- Dependency injection with GetIt
+- Hive local storage client
+- Clean architecture structure
+- Basic GetX integration
