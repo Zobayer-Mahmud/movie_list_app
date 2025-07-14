@@ -22,6 +22,7 @@ class MovieValidator {
   }
 
   static bool isValidMovie(String title, String description) {
-    return validateTitle(title) == null && validateDescription(description) == null;
+    return validateTitle(title) == null &&
+        validateDescription(description) == null;
   }
 }

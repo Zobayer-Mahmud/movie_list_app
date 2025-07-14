@@ -57,11 +57,11 @@ class MovieRepositoryImpl implements MovieRepository {
       if (movieModel == null) {
         return const Left(CacheFailure('Movie not found'));
       }
-      
+
       final updatedMovie = movieModel.copyWith(
         isFavorite: !movieModel.modelIsFavorite,
       );
-      
+
       await localDataSource.updateMovie(updatedMovie);
       return const Right(null);
     } on CacheException catch (e) {

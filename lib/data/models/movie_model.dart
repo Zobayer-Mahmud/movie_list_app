@@ -7,13 +7,13 @@ part 'movie_model.g.dart';
 class MovieModel extends Movie {
   @HiveField(0)
   final String modelId;
-  
+
   @HiveField(1)
   final String modelTitle;
-  
+
   @HiveField(2)
   final String modelDescription;
-  
+
   @HiveField(3)
   final bool modelIsFavorite;
 
@@ -23,11 +23,11 @@ class MovieModel extends Movie {
     required this.modelDescription,
     required this.modelIsFavorite,
   }) : super(
-          id: modelId,
-          title: modelTitle,
-          description: modelDescription,
-          isFavorite: modelIsFavorite,
-        );
+         id: modelId,
+         title: modelTitle,
+         description: modelDescription,
+         isFavorite: modelIsFavorite,
+       );
 
   factory MovieModel.fromEntity(Movie movie) {
     return MovieModel(

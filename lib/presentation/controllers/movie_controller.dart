@@ -1,0 +1,196 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../domain/entities/movie.dart';
+import '../../domain/usecases/get_movies.dart';
+import '../../domain/usecases/add_movie.dart';
+import '../../domain/usecases/delete_movie.dart';
+import '../../domain/usecases/toggle_favorite.dart';
+import '../../core/di/dependency_injection.dart';
+import '../../core/utils/id_generator.dart';
+import '../../core/utils/movie_validator.dart';
+
+class MovieController extends GetxController {
+  // Use cases
+  late final GetMovies _getMovies;
+  late final AddMovie _addMovie;
+  late final DeleteMovie _deleteMovie;
+  late final ToggleFavorite _toggleFavorite;
+
+  // Observable variables
+  final RxList<Movie> movies = <Movie>[].obs;
+  final RxBool isLoading = false.obs;
+  final RxString errorMessage = ''.obs;
+  final RxBool isAddingMovie = false.obs;
+
+  // Form controllers
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final RxString titleError = ''.obs;
+  final RxString descriptionError = ''.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _initializeUseCases();
+    loadMovies();
+  }
+
+  void _initializeUseCases() {
+    _getMovies = getIt<GetMovies>();
+    _addMovie = getIt<AddMovie>();
+    _deleteMovie = getIt<DeleteMovie>();
+    _toggleFavorite = getIt<ToggleFavorite>();
+  }
+
+  Future<void> loadMovies() async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      final result = await _getMovies();
+      result.fold(
+        (failure) {
+          errorMessage.value = failure.message ?? 'Failed to load movies';
+        },
+        (movieList) {
+          movies.value = movieList;
+        },
+      );
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> addMovie() async {
+    if (!_validateForm()) return;
+
+    try {
+      isAddingMovie.value = true;
+      errorMessage.value = '';
+
+      final movie = Movie(
+        id: IdGenerator.generateIdWithTimestamp(),
+        title: titleController.text.trim(),
+        description: descriptionController.text.trim(),
+        isFavorite: false,
+      );
+
+      final result = await _addMovie(movie);
+      result.fold(
+        (failure) {
+          errorMessage.value = failure.message ?? 'Failed to add movie';
+        },
+        (_) {
+          _clearForm();
+          loadMovies(); // Refresh the list
+          Get.back(); // Close the add movie screen
+          Get.snackbar(
+            'Success',
+            'Movie added successfully',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        },
+      );
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred';
+    } finally {
+      isAddingMovie.value = false;
+    }
+  }
+
+  Future<void> deleteMovie(String id) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      final result = await _deleteMovie(id);
+      result.fold(
+        (failure) {
+          errorMessage.value = failure.message ?? 'Failed to delete movie';
+        },
+        (_) {
+          loadMovies(); // Refresh the list
+          Get.snackbar(
+            'Success',
+            'Movie deleted successfully',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        },
+      );
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> toggleFavorite(String id) async {
+    try {
+      final result = await _toggleFavorite(id);
+      result.fold(
+        (failure) {
+          errorMessage.value = failure.message ?? 'Failed to update favorite';
+        },
+        (_) {
+          loadMovies(); // Refresh the list
+        },
+      );
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred';
+    }
+  }
+
+  bool _validateForm() {
+    bool isValid = true;
+
+    // Clear previous errors
+    titleError.value = '';
+    descriptionError.value = '';
+
+    // Validate title
+    final titleValidation = MovieValidator.validateTitle(titleController.text);
+    if (titleValidation != null) {
+      titleError.value = titleValidation;
+      isValid = false;
+    }
+
+    // Validate description
+    final descriptionValidation = MovieValidator.validateDescription(
+      descriptionController.text,
+    );
+    if (descriptionValidation != null) {
+      descriptionError.value = descriptionValidation;
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
+  void _clearForm() {
+    titleController.clear();
+    descriptionController.clear();
+    titleError.value = '';
+    descriptionError.value = '';
+  }
+
+  void clearErrors() {
+    errorMessage.value = '';
+    titleError.value = '';
+    descriptionError.value = '';
+  }
+
+  // Getters for filtered lists
+  List<Movie> get favoriteMovies =>
+      movies.where((movie) => movie.isFavorite).toList();
+  List<Movie> get regularMovies =>
+      movies.where((movie) => !movie.isFavorite).toList();
+
+  @override
+  void onClose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    super.onClose();
+  }
+}

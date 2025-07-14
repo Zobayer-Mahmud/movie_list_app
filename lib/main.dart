@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'core/di/dependency_injection.dart';
 import 'core/constants/app_constants.dart';
+import 'presentation/pages/movie_list_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,9 +24,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Scaffold(
-        body: Center(child: Text('Movie List App - Ready for Development')),
-      ),
+      home: const MovieListPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
