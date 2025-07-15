@@ -89,6 +89,8 @@ class MovieListPage extends StatelessWidget {
                             controller.toggleFavorite(movie.id),
                         onDelete: () =>
                             _showDeleteDialog(context, controller, movie),
+                        onTap: () =>
+                            Get.toNamed('/movie-details', arguments: movie),
                       );
                     },
                   ),

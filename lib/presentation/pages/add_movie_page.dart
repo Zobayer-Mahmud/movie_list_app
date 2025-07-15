@@ -5,6 +5,9 @@ import '../widgets/custom_text_field.dart';
 import '../widgets/theme_toggle_button.dart';
 import '../widgets/genre_selector.dart';
 import '../widgets/image_picker_widget.dart';
+import '../widgets/star_rating.dart';
+import '../widgets/year_picker.dart' as custom_year_picker;
+import '../widgets/watch_status.dart';
 
 class AddMoviePage extends StatelessWidget {
   const AddMoviePage({super.key});
@@ -84,6 +87,42 @@ class AddMoviePage extends StatelessWidget {
               () => GenreSelector(
                 selectedGenre: controller.selectedGenre.value,
                 onGenreChanged: controller.updateGenre,
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Star Rating
+            Obx(
+              () => InteractiveStarRating(
+                initialRating: controller.selectedRating.value,
+                label: 'Rating',
+                onRatingChanged: controller.updateRating,
+                size: 36,
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Release Year Picker
+            Obx(
+              () => custom_year_picker.YearPicker(
+                selectedYear: controller.selectedReleaseYear.value,
+                label: 'Release Year',
+                hintText: 'Select release year (optional)',
+                onYearChanged: controller.updateReleaseYear,
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Watch Status Toggle
+            Obx(
+              () => WatchStatusToggle(
+                isWatched: controller.selectedIsWatched.value,
+                label: 'Watch Status',
+                style: WatchStatusStyle.switch_,
+                onChanged: controller.updateWatchStatus,
               ),
             ),
 

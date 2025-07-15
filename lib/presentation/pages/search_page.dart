@@ -183,6 +183,8 @@ class SearchPage extends StatelessWidget {
                           movieController.toggleFavorite(movie.id),
                       onDelete: () =>
                           _showDeleteDialog(context, movieController, movie),
+                      onTap: () =>
+                          Get.toNamed('/movie-details', arguments: movie),
                     );
                   },
                 ),

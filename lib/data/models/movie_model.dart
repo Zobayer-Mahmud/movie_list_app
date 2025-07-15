@@ -27,6 +27,15 @@ class MovieModel extends Movie {
   @HiveField(6)
   final String? modelImagePath;
 
+  @HiveField(7)
+  final double modelRating;
+
+  @HiveField(8)
+  final int? modelReleaseYear;
+
+  @HiveField(9)
+  final bool modelIsWatched;
+
   MovieModel({
     required this.modelId,
     required this.modelTitle,
@@ -35,6 +44,9 @@ class MovieModel extends Movie {
     required this.modelCreatedAt,
     this.modelGenre,
     this.modelImagePath,
+    this.modelRating = 0.0,
+    this.modelReleaseYear,
+    this.modelIsWatched = false,
   }) : super(
          id: modelId,
          title: modelTitle,
@@ -42,6 +54,9 @@ class MovieModel extends Movie {
          isFavorite: modelIsFavorite,
          genre: MovieGenre.fromString(modelGenre),
          imagePath: modelImagePath,
+         rating: modelRating,
+         releaseYear: modelReleaseYear,
+         isWatched: modelIsWatched,
          createdAt: modelCreatedAt,
        );
 
@@ -78,6 +93,9 @@ class MovieModel extends Movie {
     MovieGenre? genre,
     String? imagePath,
     DateTime? createdAt,
+    double? rating,
+    int? releaseYear,
+    bool? isWatched,
   }) {
     return MovieModel(
       modelId: id ?? modelId,
@@ -87,6 +105,9 @@ class MovieModel extends Movie {
       modelCreatedAt: createdAt ?? modelCreatedAt,
       modelGenre: genre?.name ?? modelGenre,
       modelImagePath: imagePath ?? modelImagePath,
+      modelRating: rating ?? modelRating,
+      modelReleaseYear: releaseYear ?? modelReleaseYear,
+      modelIsWatched: isWatched ?? modelIsWatched,
     );
   }
 
@@ -99,6 +120,9 @@ class MovieModel extends Movie {
       'genre': modelGenre,
       'imagePath': modelImagePath,
       'createdAt': modelCreatedAt.toIso8601String(),
+      'rating': modelRating,
+      'releaseYear': modelReleaseYear,
+      'isWatched': modelIsWatched,
     };
   }
 
@@ -113,6 +137,9 @@ class MovieModel extends Movie {
       modelCreatedAt: DateTime.parse(
         json['createdAt'] ?? DateTime.now().toIso8601String(),
       ),
+      modelRating: json['rating']?.toDouble() ?? 0.0,
+      modelReleaseYear: json['releaseYear'],
+      modelIsWatched: json['isWatched'] ?? false,
     );
   }
 }

@@ -33,6 +33,11 @@ class MovieController extends GetxController {
   final Rx<MovieGenre?> selectedGenre = Rx<MovieGenre?>(null);
   final RxString selectedImagePath = ''.obs;
 
+  // New fields for rating, release year, and watch status
+  final RxDouble selectedRating = 0.0.obs;
+  final Rx<int?> selectedReleaseYear = Rx<int?>(null);
+  final RxBool selectedIsWatched = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -84,6 +89,9 @@ class MovieController extends GetxController {
         imagePath: selectedImagePath.value.isEmpty
             ? null
             : selectedImagePath.value,
+        rating: selectedRating.value,
+        releaseYear: selectedReleaseYear.value,
+        isWatched: selectedIsWatched.value,
       );
 
       final result = await _addMovie(movie);
@@ -184,6 +192,9 @@ class MovieController extends GetxController {
     descriptionError.value = '';
     selectedGenre.value = null;
     selectedImagePath.value = '';
+    selectedRating.value = 0.0;
+    selectedReleaseYear.value = null;
+    selectedIsWatched.value = false;
   }
 
   void clearErrors() {
@@ -199,6 +210,19 @@ class MovieController extends GetxController {
 
   void updateImagePath(String? imagePath) {
     selectedImagePath.value = imagePath ?? '';
+  }
+
+  // New methods for rating, release year, and watch status
+  void updateRating(double rating) {
+    selectedRating.value = rating;
+  }
+
+  void updateReleaseYear(int? year) {
+    selectedReleaseYear.value = year;
+  }
+
+  void updateWatchStatus(bool isWatched) {
+    selectedIsWatched.value = isWatched;
   }
 
   // Getters for filtered lists

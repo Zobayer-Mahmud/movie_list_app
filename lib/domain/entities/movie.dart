@@ -9,6 +9,9 @@ class Movie extends Equatable {
     this.isFavorite = false,
     this.genre,
     this.imagePath,
+    this.rating = 0.0,
+    this.releaseYear,
+    this.isWatched = false,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -18,6 +21,9 @@ class Movie extends Equatable {
   final bool isFavorite;
   final MovieGenre? genre;
   final String? imagePath;
+  final double rating; // 0.0 to 5.0 stars
+  final int? releaseYear;
+  final bool isWatched;
   final DateTime createdAt;
 
   Movie copyWith({
@@ -27,6 +33,9 @@ class Movie extends Equatable {
     bool? isFavorite,
     MovieGenre? genre,
     String? imagePath,
+    double? rating,
+    int? releaseYear,
+    bool? isWatched,
     DateTime? createdAt,
   }) {
     return Movie(
@@ -36,6 +45,9 @@ class Movie extends Equatable {
       isFavorite: isFavorite ?? this.isFavorite,
       genre: genre ?? this.genre,
       imagePath: imagePath ?? this.imagePath,
+      rating: rating ?? this.rating,
+      releaseYear: releaseYear ?? this.releaseYear,
+      isWatched: isWatched ?? this.isWatched,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -48,6 +60,9 @@ class Movie extends Equatable {
     isFavorite,
     genre,
     imagePath,
+    rating,
+    releaseYear,
+    isWatched,
     createdAt,
   ];
 }

@@ -11,6 +11,7 @@ import 'presentation/pages/statistics_page.dart';
 import 'presentation/pages/search_page.dart';
 import 'presentation/pages/settings_page.dart';
 import 'presentation/pages/add_movie_page.dart';
+import 'presentation/pages/movie_details_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +42,10 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/search', page: () => const SearchPage()),
         GetPage(name: '/settings', page: () => const SettingsPage()),
         GetPage(name: '/add-movie', page: () => const AddMoviePage()),
+        GetPage(
+          name: '/movie-details',
+          page: () => MovieDetailsPage(movie: Get.arguments),
+        ),
       ],
       debugShowCheckedModeBanner: false,
     );
