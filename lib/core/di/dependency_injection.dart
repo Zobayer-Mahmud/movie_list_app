@@ -12,6 +12,7 @@ import '../../domain/usecases/delete_movie.dart';
 import '../../domain/usecases/toggle_favorite.dart';
 import '../../presentation/controllers/theme_controller.dart';
 import '../../presentation/controllers/movie_controller.dart';
+import '../../presentation/controllers/navigation_controller.dart';
 import '../../presentation/controllers/search_controller.dart'
     as search_controller;
 import 'package:hive_flutter/hive_flutter.dart';
@@ -51,6 +52,9 @@ class DependencyInjection {
 
     // Initialize theme controller
     Get.put(ThemeController());
+
+    // Initialize navigation controller
+    Get.put(NavigationController());
 
     // Initialize movie controller first
     Get.put(MovieController());

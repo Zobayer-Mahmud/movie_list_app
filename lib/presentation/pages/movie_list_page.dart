@@ -9,6 +9,7 @@ import '../widgets/theme_toggle_button.dart';
 import '../widgets/search_bar.dart' as custom_search;
 import '../widgets/filter_chips.dart';
 import '../widgets/search_results_summary.dart';
+import '../widgets/bottom_nav_bar.dart';
 import 'add_movie_page.dart';
 
 class MovieListPage extends StatelessWidget {
@@ -97,6 +98,7 @@ class MovieListPage extends StatelessWidget {
           ],
         );
       }),
+      bottomNavigationBar: const BottomNavBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Get.to(() => const AddMoviePage()),
         tooltip: 'Add Movie',
