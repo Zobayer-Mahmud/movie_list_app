@@ -4,6 +4,7 @@ import 'package:get/get.dart' as g;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/foundation.dart';
+import '../constants/tmdb_constants.dart';
 import 'api_response.dart';
 
 typedef MapData = Map<String, dynamic>;
@@ -16,11 +17,8 @@ class DioClient extends g.GetxService {
   static DioClient get to => g.Get.find();
 
   Future<DioClient> init() async {
-    // Get environment variables with fallbacks
-    final baseUrl =
-        dotenv.env['TMDB_BASE_URL'] ?? 'https://api.themoviedb.org/3';
-    final bearerToken =
-        dotenv.env['TMDB_BEARER_TOKEN'] ??
+    // Get bearer token from environment (private)
+    final bearerToken = dotenv.env['TMDB_BEARER_TOKEN'] ??
         'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNWM3MzllZjQyMmIxZTgzYWU0NTE1MmNhZmJhMDA0NyIsIm5iZiI6MTc1MjYwMjQ5MC4yODksInN1YiI6IjY4NzY5NzdhODQzNzZiOGE5ODg5NjI2NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.hoxnMardhsWUqGUdJ7PFAjXBOO1RK0TsgLj8_J-2hSo';
 
     _header = {
@@ -31,7 +29,7 @@ class DioClient extends g.GetxService {
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: baseUrl,
+        baseUrl: TMDBConstants.baseUrl, // Use constants for public URL
         headers: _header,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
