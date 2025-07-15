@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../domain/entities/movie.dart';
+import 'genre_badge.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
@@ -36,93 +38,158 @@ class MovieCard extends StatelessWidget {
         onDismissed: (direction) => onDelete(),
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      movie.title,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Movie poster/image
+                if (movie.imagePath != null)
+                  Container(
+                    width: 80,
+                    height: 120,
+                    margin: const EdgeInsets.only(right: 16),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(
+                        File(movie.imagePath!),
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return _buildPlaceholderImage();
+                        },
                       ),
                     ),
+                  )
+                else
+                  Container(
+                    width: 80,
+                    height: 120,
+                    margin: const EdgeInsets.only(right: 16),
+                    child: _buildPlaceholderImage(),
                   ),
-                  IconButton(
-                    onPressed: onFavoriteToggle,
-                    icon: Icon(
-                      movie.isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: movie.isFavorite ? Colors.red : Colors.grey,
-                      size: 28,
-                    ),
-                    tooltip: movie.isFavorite
-                        ? 'Remove from favorites'
-                        : 'Add to favorites',
-                  ),
-                  IconButton(
-                    onPressed: onDelete,
-                    icon: const Icon(Icons.delete_outline, color: Colors.grey),
-                    tooltip: 'Delete movie',
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                movie.description,
-                style: Theme.of(context).textTheme.bodyLarge,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (movie.isFavorite) ...[
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.red.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: const Text(
-                    '❤️ Favorite',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
+
+                // Movie details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              movie.title,
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: onFavoriteToggle,
+                            icon: Icon(
+                              movie.isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: movie.isFavorite
+                                  ? Colors.red
+                                  : Colors.grey,
+                              size: 24,
+                            ),
+                            tooltip: movie.isFavorite
+                                ? 'Remove from favorites'
+                                : 'Add to favorites',
+                          ),
+                          IconButton(
+                            onPressed: onDelete,
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
+                            tooltip: 'Delete movie',
+                          ),
+                        ],
+                      ),
+
+                      // Genre badge
+                      if (movie.genre != null) ...[
+                        GenreBadge(genre: movie.genre!),
+                        const SizedBox(height: 8),
+                      ],
+
+                      Text(
+                        movie.description,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      const Spacer(),
+
+                      if (movie.isFavorite) ...[
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.red.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: const Text(
+                            '❤️ Favorite',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ],
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  Widget _buildPlaceholderImage() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: const Icon(Icons.movie, size: 40, color: Colors.grey),
+    );
+  }
+
   Future<bool?> _showDeleteConfirmation(BuildContext context) {
     return showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Movie'),
-        content: Text('Are you sure you want to delete "${movie.title}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Movie'),
+          content: Text('Are you sure you want to delete "${movie.title}"?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

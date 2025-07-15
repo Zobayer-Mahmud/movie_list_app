@@ -21,13 +21,16 @@ class MovieModelAdapter extends TypeAdapter<MovieModel> {
       modelTitle: fields[1] as String,
       modelDescription: fields[2] as String,
       modelIsFavorite: fields[3] as bool,
+      modelCreatedAt: fields[4] as DateTime,
+      modelGenre: fields[5] as String?,
+      modelImagePath: fields[6] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, MovieModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.modelId)
       ..writeByte(1)
@@ -35,7 +38,13 @@ class MovieModelAdapter extends TypeAdapter<MovieModel> {
       ..writeByte(2)
       ..write(obj.modelDescription)
       ..writeByte(3)
-      ..write(obj.modelIsFavorite);
+      ..write(obj.modelIsFavorite)
+      ..writeByte(4)
+      ..write(obj.modelCreatedAt)
+      ..writeByte(5)
+      ..write(obj.modelGenre)
+      ..writeByte(6)
+      ..write(obj.modelImagePath);
   }
 
   @override

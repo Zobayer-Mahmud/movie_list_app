@@ -1,30 +1,81 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:movie_list_app/main.dart';
+import 'package:get/get.dart';
+import 'package:movie_list_app/presentation/widgets/movie_card.dart';
+import 'package:movie_list_app/domain/entities/movie.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('MovieCard displays movie information correctly', (
+    WidgetTester tester,
+  ) async {
+    // Create a test movie
+    final movie = Movie(
+      id: '1',
+      title: 'Test Movie',
+      description: 'This is a test movie description',
+      isFavorite: false,
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Build the MovieCard widget
+    await tester.pumpWidget(
+      GetMaterialApp(
+        home: Scaffold(
+          body: MovieCard(
+            movie: movie,
+            onFavoriteToggle: () {},
+            onDelete: () {},
+          ),
+        ),
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Wait for the widget to settle
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that the movie information is displayed
+    expect(find.text('Test Movie'), findsOneWidget);
+    expect(find.text('This is a test movie description'), findsOneWidget);
+
+    // Verify that the favorite and delete buttons are displayed
+    expect(find.byIcon(Icons.favorite_border), findsOneWidget);
+    expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+
+    // Clean up
+    Get.reset();
+  });
+
+  testWidgets('MovieCard shows favorite icon when movie is favorite', (
+    WidgetTester tester,
+  ) async {
+    // Create a favorite test movie
+    final movie = Movie(
+      id: '1',
+      title: 'Favorite Movie',
+      description: 'This is a favorite movie',
+      isFavorite: true,
+    );
+
+    // Build the MovieCard widget
+    await tester.pumpWidget(
+      GetMaterialApp(
+        home: Scaffold(
+          body: MovieCard(
+            movie: movie,
+            onFavoriteToggle: () {},
+            onDelete: () {},
+          ),
+        ),
+      ),
+    );
+
+    // Wait for the widget to settle
+    await tester.pumpAndSettle();
+
+    // Verify that the filled favorite icon is displayed
+    expect(find.byIcon(Icons.favorite), findsOneWidget);
+    expect(find.byIcon(Icons.favorite_border), findsNothing);
+
+    // Clean up
+    Get.reset();
   });
 }

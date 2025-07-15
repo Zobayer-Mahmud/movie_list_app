@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/movie_controller.dart';
+import '../controllers/search_controller.dart' as search_controller;
 import '../widgets/movie_card.dart';
 import '../widgets/empty_state_widget.dart';
 import '../widgets/error_widget.dart';
+import '../widgets/theme_toggle_button.dart';
+import '../widgets/search_bar.dart' as custom_search;
+import '../widgets/filter_chips.dart';
+import '../widgets/search_results_summary.dart';
 import 'add_movie_page.dart';
 
 class MovieListPage extends StatelessWidget {
@@ -12,12 +17,13 @@ class MovieListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MovieController controller = Get.put(MovieController());
+    final searchController = Get.find<search_controller.SearchController>();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Movie List'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
+          const ThemeToggleButton(),
           IconButton(
             onPressed: controller.loadMovies,
             icon: const Icon(Icons.refresh),
@@ -44,20 +50,51 @@ class MovieListPage extends StatelessWidget {
           );
         }
 
-        return RefreshIndicator(
-          onRefresh: controller.loadMovies,
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: controller.movies.length,
-            itemBuilder: (context, index) {
-              final movie = controller.movies[index];
-              return MovieCard(
-                movie: movie,
-                onFavoriteToggle: () => controller.toggleFavorite(movie.id),
-                onDelete: () => _showDeleteDialog(context, controller, movie),
-              );
-            },
-          ),
+        return Column(
+          children: [
+            // Search bar
+            const custom_search.SearchBar(),
+
+            // Filter chips
+            const FilterChips(),
+
+            // Results summary
+            const SearchResultsSummary(),
+
+            // Movie list
+            Expanded(
+              child: Obx(() {
+                final moviesToShow = searchController.filteredMovies;
+
+                if (moviesToShow.isEmpty) {
+                  return const Center(
+                    child: EmptyStateWidget(
+                      message:
+                          'No movies match your search criteria.\nTry adjusting your filters.',
+                    ),
+                  );
+                }
+
+                return RefreshIndicator(
+                  onRefresh: controller.loadMovies,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: moviesToShow.length,
+                    itemBuilder: (context, index) {
+                      final movie = moviesToShow[index];
+                      return MovieCard(
+                        movie: movie,
+                        onFavoriteToggle: () =>
+                            controller.toggleFavorite(movie.id),
+                        onDelete: () =>
+                            _showDeleteDialog(context, controller, movie),
+                      );
+                    },
+                  ),
+                );
+              }),
+            ),
+          ],
         );
       }),
       floatingActionButton: FloatingActionButton(

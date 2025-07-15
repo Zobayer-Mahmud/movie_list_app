@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/movie_controller.dart';
 import '../widgets/custom_text_field.dart';
+import '../widgets/theme_toggle_button.dart';
+import '../widgets/genre_selector.dart';
+import '../widgets/image_picker_widget.dart';
 
 class AddMoviePage extends StatelessWidget {
   const AddMoviePage({super.key});
@@ -13,7 +16,7 @@ class AddMoviePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Movie'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: const [ThemeToggleButton()],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -62,6 +65,28 @@ class AddMoviePage extends StatelessWidget {
                 },
               ),
             ),
+            const SizedBox(height: 24),
+
+            // Image Picker
+            Obx(
+              () => ImagePickerWidget(
+                initialImagePath: controller.selectedImagePath.value.isEmpty
+                    ? null
+                    : controller.selectedImagePath.value,
+                onImageChanged: controller.updateImagePath,
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Genre Selector
+            Obx(
+              () => GenreSelector(
+                selectedGenre: controller.selectedGenre.value,
+                onGenreChanged: controller.updateGenre,
+              ),
+            ),
+
             const SizedBox(height: 32),
             Obx(() {
               if (controller.errorMessage.value.isNotEmpty) {

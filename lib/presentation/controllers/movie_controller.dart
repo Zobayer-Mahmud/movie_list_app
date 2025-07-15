@@ -8,6 +8,7 @@ import '../../domain/usecases/toggle_favorite.dart';
 import '../../core/di/dependency_injection.dart';
 import '../../core/utils/id_generator.dart';
 import '../../core/utils/movie_validator.dart';
+import '../../core/constants/app_enums.dart';
 
 class MovieController extends GetxController {
   // Use cases
@@ -27,6 +28,10 @@ class MovieController extends GetxController {
   final descriptionController = TextEditingController();
   final RxString titleError = ''.obs;
   final RxString descriptionError = ''.obs;
+
+  // New fields for genre and image
+  final Rx<MovieGenre?> selectedGenre = Rx<MovieGenre?>(null);
+  final RxString selectedImagePath = ''.obs;
 
   @override
   void onInit() {
@@ -75,6 +80,10 @@ class MovieController extends GetxController {
         title: titleController.text.trim(),
         description: descriptionController.text.trim(),
         isFavorite: false,
+        genre: selectedGenre.value,
+        imagePath: selectedImagePath.value.isEmpty
+            ? null
+            : selectedImagePath.value,
       );
 
       final result = await _addMovie(movie);
@@ -173,12 +182,23 @@ class MovieController extends GetxController {
     descriptionController.clear();
     titleError.value = '';
     descriptionError.value = '';
+    selectedGenre.value = null;
+    selectedImagePath.value = '';
   }
 
   void clearErrors() {
     errorMessage.value = '';
     titleError.value = '';
     descriptionError.value = '';
+  }
+
+  // New methods for handling genre and image
+  void updateGenre(MovieGenre? genre) {
+    selectedGenre.value = genre;
+  }
+
+  void updateImagePath(String? imagePath) {
+    selectedImagePath.value = imagePath ?? '';
   }
 
   // Getters for filtered lists
