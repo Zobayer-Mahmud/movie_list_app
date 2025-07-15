@@ -42,8 +42,9 @@ class DioClient extends g.GetxService {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           // Check network connectivity
-          final connectivityResult = await _connectivity.checkConnectivity();
-          if (connectivityResult == ConnectivityResult.none) {
+          final connectivityResults = await _connectivity.checkConnectivity();
+          if (connectivityResults.contains(ConnectivityResult.none) ||
+              connectivityResults.isEmpty) {
             return handler.reject(
               DioException(
                 requestOptions: options,
