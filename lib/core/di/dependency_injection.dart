@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:get/get.dart';
 import 'local_storage_client.dart';
+import '../network/dio_client.dart';
 import '../../data/models/movie_model.dart';
 import '../../data/datasources/movie_local_datasource.dart';
 import '../../data/datasources/movie_local_datasource_impl.dart';
@@ -15,6 +16,7 @@ import '../../domain/usecases/toggle_watch_status.dart';
 import '../../presentation/controllers/theme_controller.dart';
 import '../../presentation/controllers/movie_controller.dart';
 import '../../presentation/controllers/navigation_controller.dart';
+import '../../presentation/controllers/tmdb_controller.dart';
 import '../../presentation/controllers/search_controller.dart'
     as search_controller;
 import 'package:hive_flutter/hive_flutter.dart';
@@ -65,5 +67,11 @@ class DependencyInjection {
 
     // Initialize search controller after movie controller is ready
     Get.put(search_controller.SearchController());
+
+    // Register Dio client
+    await Get.putAsync(() => DioClient().init());
+
+    // Register TMDB controller
+    Get.put(TMDBController());
   }
 }

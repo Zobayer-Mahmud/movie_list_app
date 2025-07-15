@@ -5,7 +5,6 @@ import '../controllers/movie_controller.dart';
 import '../widgets/movie_card.dart';
 import '../widgets/empty_state_widget.dart';
 import '../widgets/theme_toggle_button.dart';
-import '../widgets/bottom_nav_bar.dart';
 import '../widgets/advanced_filter_sheet.dart';
 import '../../core/constants/app_enums.dart';
 
@@ -214,7 +213,6 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ],
       ),
-      bottomNavigationBar: const BottomNavBar(),
     );
   }
 

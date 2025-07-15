@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/movie_controller.dart';
 import '../widgets/theme_toggle_button.dart';
-import '../widgets/bottom_nav_bar.dart';
 import '../../core/constants/app_enums.dart';
 
 class StatisticsPage extends StatelessWidget {
@@ -215,7 +214,6 @@ class StatisticsPage extends StatelessWidget {
           ),
         );
       }),
-      bottomNavigationBar: const BottomNavBar(),
     );
   }
 

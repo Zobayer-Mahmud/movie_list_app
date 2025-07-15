@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../controllers/theme_controller.dart';
 import '../controllers/movie_controller.dart';
 import '../widgets/theme_toggle_button.dart';
-import '../widgets/bottom_nav_bar.dart';
 import '../../core/constants/app_constants.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -381,7 +380,6 @@ class SettingsPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const BottomNavBar(),
     );
   }
 

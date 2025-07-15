@@ -4,7 +4,6 @@ import '../controllers/movie_controller.dart';
 import '../widgets/movie_card.dart';
 import '../widgets/empty_state_widget.dart';
 import '../widgets/theme_toggle_button.dart';
-import '../widgets/bottom_nav_bar.dart';
 
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({super.key});
@@ -113,7 +112,6 @@ class FavoritesPage extends StatelessWidget {
           ],
         );
       }),
-      bottomNavigationBar: const BottomNavBar(),
     );
   }
 

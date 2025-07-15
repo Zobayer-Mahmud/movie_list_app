@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Network permission for TMDB API -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    
     <application
         android:label="movie_list_app"
         android:name="${applicationName}"

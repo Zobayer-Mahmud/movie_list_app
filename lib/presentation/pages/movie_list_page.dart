@@ -9,7 +9,6 @@ import '../widgets/theme_toggle_button.dart';
 import '../widgets/search_bar.dart' as custom_search;
 import '../widgets/filter_chips.dart';
 import '../widgets/search_results_summary.dart';
-import '../widgets/bottom_nav_bar.dart';
 import 'add_movie_page.dart';
 
 class MovieListPage extends StatelessWidget {
@@ -23,14 +22,7 @@ class MovieListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Movie List'),
-        actions: [
-          const ThemeToggleButton(),
-          IconButton(
-            onPressed: controller.loadMovies,
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Refresh',
-          ),
-        ],
+        actions: [const ThemeToggleButton()],
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -100,7 +92,6 @@ class MovieListPage extends StatelessWidget {
           ],
         );
       }),
-      bottomNavigationBar: const BottomNavBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Get.to(() => const AddMoviePage()),
         tooltip: 'Add Movie',

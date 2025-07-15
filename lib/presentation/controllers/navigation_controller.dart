@@ -12,16 +12,16 @@ class NavigationController extends GetxController {
       route: '/movies',
     ),
     NavigationItem(
+      icon: Icons.explore_outlined,
+      activeIcon: Icons.explore,
+      label: 'Discover',
+      route: '/tmdb-discovery',
+    ),
+    NavigationItem(
       icon: Icons.favorite_border,
       activeIcon: Icons.favorite,
       label: 'Favorites',
       route: '/favorites',
-    ),
-    NavigationItem(
-      icon: Icons.analytics_outlined,
-      activeIcon: Icons.analytics,
-      label: 'Statistics',
-      route: '/statistics',
     ),
     NavigationItem(
       icon: Icons.search_outlined,
