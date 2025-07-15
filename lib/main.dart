@@ -16,6 +16,7 @@ import 'presentation/pages/edit_movie_page.dart';
 import 'presentation/pages/movie_details_page.dart';
 import 'presentation/pages/tmdb_discovery_page.dart';
 import 'presentation/pages/tmdb_search_page.dart';
+import 'presentation/pages/tmdb_movie_details_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,6 +72,10 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(name: '/tmdb-discovery', page: () => TMDBDiscoveryPage()),
         GetPage(name: '/tmdb-search', page: () => TMDBSearchPage()),
+        GetPage(
+          name: '/tmdb-details',
+          page: () => TMDBMovieDetailsPage(movie: Get.arguments),
+        ),
       ],
     );
   }
