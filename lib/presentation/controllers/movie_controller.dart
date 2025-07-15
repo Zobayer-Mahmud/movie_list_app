@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import '../../domain/entities/movie.dart';
 import '../../domain/usecases/get_movies.dart';
 import '../../domain/usecases/add_movie.dart';
+import '../../domain/usecases/update_movie.dart';
 import '../../domain/usecases/delete_movie.dart';
 import '../../domain/usecases/toggle_favorite.dart';
+import '../../domain/usecases/toggle_watch_status.dart';
 import '../../core/di/dependency_injection.dart';
 import '../../core/utils/id_generator.dart';
 import '../../core/utils/movie_validator.dart';
@@ -14,8 +16,10 @@ class MovieController extends GetxController {
   // Use cases
   late final GetMovies _getMovies;
   late final AddMovie _addMovie;
+  late final UpdateMovie _updateMovie;
   late final DeleteMovie _deleteMovie;
   late final ToggleFavorite _toggleFavorite;
+  late final ToggleWatchStatus _toggleWatchStatus;
 
   // Observable variables
   final RxList<Movie> movies = <Movie>[].obs;
@@ -48,8 +52,10 @@ class MovieController extends GetxController {
   void _initializeUseCases() {
     _getMovies = getIt<GetMovies>();
     _addMovie = getIt<AddMovie>();
+    _updateMovie = getIt<UpdateMovie>();
     _deleteMovie = getIt<DeleteMovie>();
     _toggleFavorite = getIt<ToggleFavorite>();
+    _toggleWatchStatus = getIt<ToggleWatchStatus>();
   }
 
   Future<void> loadMovies() async {
@@ -117,6 +123,27 @@ class MovieController extends GetxController {
     }
   }
 
+  Future<void> updateMovie(Movie movie) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      final result = await _updateMovie(movie);
+      result.fold(
+        (failure) {
+          errorMessage.value = failure.message ?? 'Failed to update movie';
+        },
+        (_) {
+          loadMovies(); // Refresh the list
+        },
+      );
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   Future<void> deleteMovie(String id) async {
     try {
       isLoading.value = true;
@@ -152,6 +179,30 @@ class MovieController extends GetxController {
         },
         (_) {
           loadMovies(); // Refresh the list
+        },
+      );
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred';
+    }
+  }
+
+  Future<void> toggleWatchStatus(String id) async {
+    try {
+      final result = await _toggleWatchStatus(id);
+      result.fold(
+        (failure) {
+          errorMessage.value =
+              failure.message ?? 'Failed to update watch status';
+        },
+        (_) {
+          loadMovies(); // Refresh the list
+          Get.snackbar(
+            'Success',
+            'Watch status updated successfully',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Get.theme.colorScheme.primary,
+            colorText: Get.theme.colorScheme.onPrimary,
+          );
         },
       );
     } catch (e) {

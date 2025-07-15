@@ -39,6 +39,19 @@ class MovieRepositoryImpl implements MovieRepository {
   }
 
   @override
+  Future<Either<Failure, void>> updateMovie(Movie movie) async {
+    try {
+      final movieModel = MovieModel.fromEntity(movie);
+      await localDataSource.updateMovie(movieModel);
+      return const Right(null);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(e.message));
+    } catch (e) {
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> deleteMovie(String id) async {
     try {
       await localDataSource.deleteMovie(id);
@@ -60,6 +73,27 @@ class MovieRepositoryImpl implements MovieRepository {
 
       final updatedMovie = movieModel.copyWith(
         isFavorite: !movieModel.modelIsFavorite,
+      );
+
+      await localDataSource.updateMovie(updatedMovie);
+      return const Right(null);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(e.message));
+    } catch (e) {
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> toggleWatchStatus(String id) async {
+    try {
+      final movieModel = await localDataSource.getMovieById(id);
+      if (movieModel == null) {
+        return const Left(CacheFailure('Movie not found'));
+      }
+
+      final updatedMovie = movieModel.copyWith(
+        isWatched: !movieModel.modelIsWatched,
       );
 
       await localDataSource.updateMovie(updatedMovie);

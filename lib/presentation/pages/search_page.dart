@@ -6,10 +6,24 @@ import '../widgets/movie_card.dart';
 import '../widgets/empty_state_widget.dart';
 import '../widgets/theme_toggle_button.dart';
 import '../widgets/bottom_nav_bar.dart';
+import '../widgets/advanced_filter_sheet.dart';
 import '../../core/constants/app_enums.dart';
 
-class SearchPage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
+
+  @override
+  State<SearchPage> createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  void _showAdvancedFilters(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => const AdvancedFilterBottomSheet(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +33,14 @@ class SearchPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search Movies'),
-        actions: const [ThemeToggleButton()],
+        actions: [
+          IconButton(
+            onPressed: () => _showAdvancedFilters(context),
+            icon: const Icon(Icons.tune),
+            tooltip: 'Advanced Filters',
+          ),
+          const ThemeToggleButton(),
+        ],
       ),
       body: Column(
         children: [

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'core/di/dependency_injection.dart';
 import 'core/constants/app_constants.dart';
 import 'core/constants/app_themes.dart';
-import 'core/constants/app_routes.dart';
 import 'presentation/controllers/theme_controller.dart';
 import 'presentation/pages/movie_list_page.dart';
 import 'presentation/pages/favorites_page.dart';
@@ -11,6 +10,7 @@ import 'presentation/pages/statistics_page.dart';
 import 'presentation/pages/search_page.dart';
 import 'presentation/pages/settings_page.dart';
 import 'presentation/pages/add_movie_page.dart';
+import 'presentation/pages/edit_movie_page.dart';
 import 'presentation/pages/movie_details_page.dart';
 
 Future<void> main() async {
@@ -42,6 +42,10 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/search', page: () => const SearchPage()),
         GetPage(name: '/settings', page: () => const SettingsPage()),
         GetPage(name: '/add-movie', page: () => const AddMoviePage()),
+        GetPage(
+          name: '/edit-movie',
+          page: () => EditMoviePage(movie: Get.arguments),
+        ),
         GetPage(
           name: '/movie-details',
           page: () => MovieDetailsPage(movie: Get.arguments),

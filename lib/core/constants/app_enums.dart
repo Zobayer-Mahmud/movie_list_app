@@ -3,7 +3,16 @@ enum SortOption {
   dateOldest('Date Added (Oldest First)'),
   titleAZ('Title (A-Z)'),
   titleZA('Title (Z-A)'),
-  favoritesFirst('Favorites First');
+  favoritesFirst('Favorites First'),
+  // New advanced sorting options
+  dateAsc('Date Added ↑'),
+  dateDesc('Date Added ↓'),
+  titleAsc('Title A-Z'),
+  titleDesc('Title Z-A'),
+  ratingAsc('Rating ↑'),
+  ratingDesc('Rating ↓'),
+  yearAsc('Year ↑'),
+  yearDesc('Year ↓');
 
   const SortOption(this.displayName);
 

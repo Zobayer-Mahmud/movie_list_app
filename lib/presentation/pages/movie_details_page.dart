@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../domain/entities/movie.dart';
@@ -23,25 +24,89 @@ class MovieDetailsPage extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: Container(
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.7),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: IconButton(
+                    onPressed: () => Get.back(),
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    padding: EdgeInsets.zero,
+                    splashRadius: 20,
+                    tooltip: 'Go back',
+                  ),
+                ),
+              ),
+            ),
             flexibleSpace: FlexibleSpaceBar(
               background: _buildMoviePoster(context),
             ),
             actions: [
-              IconButton(
-                onPressed: () => movieController.toggleFavorite(movie.id),
-                icon: Obx(() {
-                  final currentMovie = movieController.movies.firstWhereOrNull(
-                    (m) => m.id == movie.id,
-                  );
-                  return Icon(
-                    currentMovie?.isFavorite ?? movie.isFavorite
-                        ? Icons.favorite
-                        : Icons.favorite_border,
-                    color: currentMovie?.isFavorite ?? movie.isFavorite
-                        ? Colors.red
-                        : Colors.white,
-                  );
-                }),
+              Container(
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.7),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: IconButton(
+                      onPressed: () => movieController.toggleFavorite(movie.id),
+                      icon: Obx(() {
+                        final currentMovie = movieController.movies
+                            .firstWhereOrNull((m) => m.id == movie.id);
+                        return Icon(
+                          currentMovie?.isFavorite ?? movie.isFavorite
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: currentMovie?.isFavorite ?? movie.isFavorite
+                              ? Colors.red
+                              : Colors.white,
+                          size: 24,
+                        );
+                      }),
+                      padding: EdgeInsets.zero,
+                      splashRadius: 20,
+                      tooltip: 'Toggle favorite',
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -100,10 +165,17 @@ class MovieDetailsPage extends StatelessWidget {
                         ),
                         const SizedBox(width: 16),
                       ],
-                      WatchStatusBadge(
-                        isWatched: movie.isWatched,
-                        showText: true,
-                      ),
+                      Obx(() {
+                        final currentMovie = movieController.movies
+                            .firstWhereOrNull((m) => m.id == movie.id);
+                        final isWatched =
+                            currentMovie?.isWatched ?? movie.isWatched;
+
+                        return WatchStatusBadge(
+                          isWatched: isWatched,
+                          showText: true,
+                        );
+                      }),
                     ],
                   ),
 
@@ -284,21 +356,62 @@ class MovieDetailsPage extends StatelessWidget {
             );
             final isWatched = currentMovie?.isWatched ?? movie.isWatched;
 
-            return ElevatedButton.icon(
-              onPressed: () {
-                // TODO: Implement watch status toggle
-                Get.snackbar(
-                  'Feature Coming Soon',
-                  'Watch status toggle will be implemented',
-                  snackPosition: SnackPosition.BOTTOM,
-                );
-              },
-              icon: Icon(isWatched ? Icons.visibility_off : Icons.visibility),
-              label: Text(isWatched ? 'Mark as Unwatched' : 'Mark as Watched'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            return Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                gradient: LinearGradient(
+                  colors: isWatched
+                      ? [
+                          Theme.of(context).colorScheme.secondary,
+                          Theme.of(
+                            context,
+                          ).colorScheme.secondary.withValues(alpha: 0.8),
+                        ]
+                      : [
+                          Theme.of(context).colorScheme.primary,
+                          Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.8),
+                        ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color:
+                        (isWatched
+                                ? Theme.of(context).colorScheme.secondary
+                                : Theme.of(context).colorScheme.primary)
+                            .withValues(alpha: 0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  controller.toggleWatchStatus(movie.id);
+                },
+                icon: Icon(
+                  isWatched ? Icons.visibility_off : Icons.visibility,
+                  size: 24,
+                ),
+                label: Text(
+                  isWatched ? 'Mark as Unwatched' : 'Mark as Watched',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
               ),
             );
@@ -309,12 +422,7 @@ class MovieDetailsPage extends StatelessWidget {
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: () {
-              // TODO: Implement edit functionality
-              Get.snackbar(
-                'Feature Coming Soon',
-                'Edit movie functionality will be implemented',
-                snackPosition: SnackPosition.BOTTOM,
-              );
+              Get.toNamed('/edit-movie', arguments: movie);
             },
             icon: const Icon(Icons.edit),
             label: const Text('Edit Movie'),

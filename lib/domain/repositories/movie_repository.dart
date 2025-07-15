@@ -5,6 +5,8 @@ import '../../core/error/failures.dart';
 abstract class MovieRepository {
   Future<Either<Failure, List<Movie>>> getMovies();
   Future<Either<Failure, void>> addMovie(Movie movie);
+  Future<Either<Failure, void>> updateMovie(Movie movie);
   Future<Either<Failure, void>> deleteMovie(String id);
   Future<Either<Failure, void>> toggleFavorite(String id);
+  Future<Either<Failure, void>> toggleWatchStatus(String id);
 }

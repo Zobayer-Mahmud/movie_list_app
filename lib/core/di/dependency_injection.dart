@@ -8,8 +8,10 @@ import '../../data/repositories/movie_repository_impl.dart';
 import '../../domain/repositories/movie_repository.dart';
 import '../../domain/usecases/get_movies.dart';
 import '../../domain/usecases/add_movie.dart';
+import '../../domain/usecases/update_movie.dart';
 import '../../domain/usecases/delete_movie.dart';
 import '../../domain/usecases/toggle_favorite.dart';
+import '../../domain/usecases/toggle_watch_status.dart';
 import '../../presentation/controllers/theme_controller.dart';
 import '../../presentation/controllers/movie_controller.dart';
 import '../../presentation/controllers/navigation_controller.dart';
@@ -47,8 +49,10 @@ class DependencyInjection {
     // Use cases
     getIt.registerLazySingleton(() => GetMovies(getIt()));
     getIt.registerLazySingleton(() => AddMovie(getIt()));
+    getIt.registerLazySingleton(() => UpdateMovie(getIt()));
     getIt.registerLazySingleton(() => DeleteMovie(getIt()));
     getIt.registerLazySingleton(() => ToggleFavorite(getIt()));
+    getIt.registerLazySingleton(() => ToggleWatchStatus(getIt()));
 
     // Initialize theme controller
     Get.put(ThemeController());
