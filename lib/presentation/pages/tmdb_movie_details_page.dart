@@ -38,13 +38,12 @@ class TMDBMovieDetailsPage extends StatelessWidget {
                   // Backdrop Image
                   if (movie.backdropPath != null)
                     CachedNetworkImage(
-                      imageUrl: '${TMDBConstants.backdropSizeW1280}${movie.backdropPath}',
+                      imageUrl:
+                          '${TMDBConstants.backdropSizeW1280}${movie.backdropPath}',
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         color: Colors.grey[300],
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                        child: const Center(child: CircularProgressIndicator()),
                       ),
                       errorWidget: (context, url, error) => Container(
                         color: Colors.grey[300],
@@ -66,10 +65,7 @@ class TMDBMovieDetailsPage extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black54,
-                        ],
+                        colors: [Colors.transparent, Colors.black54],
                       ),
                     ),
                   ),
@@ -106,7 +102,8 @@ class TMDBMovieDetailsPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                           child: movie.posterPath != null
                               ? CachedNetworkImage(
-                                  imageUrl: '${TMDBConstants.posterSizeW500}${movie.posterPath}',
+                                  imageUrl:
+                                      '${TMDBConstants.posterSizeW500}${movie.posterPath}',
                                   fit: BoxFit.cover,
                                   placeholder: (context, url) => Container(
                                     color: Colors.grey[300],
@@ -114,10 +111,11 @@ class TMDBMovieDetailsPage extends StatelessWidget {
                                       child: CircularProgressIndicator(),
                                     ),
                                   ),
-                                  errorWidget: (context, url, error) => Container(
-                                    color: Colors.grey[300],
-                                    child: const Icon(Icons.error),
-                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Container(
+                                        color: Colors.grey[300],
+                                        child: const Icon(Icons.error),
+                                      ),
                                 )
                               : Container(
                                   color: Colors.grey[300],
@@ -137,41 +135,35 @@ class TMDBMovieDetailsPage extends StatelessWidget {
                           children: [
                             Text(
                               movie.title,
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 8),
                             if (movie.originalTitle != movie.title) ...[
                               Text(
                                 'Original: ${movie.originalTitle}',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.grey[600],
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.grey[600],
+                                    ),
                               ),
                               const SizedBox(height: 8),
                             ],
                             // Rating and Release Date
                             Row(
                               children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                  size: 20,
-                                ),
+                                Icon(Icons.star, color: Colors.amber, size: 20),
                                 const SizedBox(width: 4),
                                 Text(
                                   '${movie.voteAverage.toStringAsFixed(1)}',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
                                   ' (${movie.voteCount} votes)',
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.grey[600],
-                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(color: Colors.grey[600]),
                                 ),
                               ],
                             ),
@@ -211,7 +203,7 @@ class TMDBMovieDetailsPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Action Buttons
                   Row(
                     children: [
@@ -252,9 +244,9 @@ class TMDBMovieDetailsPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Overview Section
                   Text(
                     'Overview',
@@ -264,14 +256,16 @@ class TMDBMovieDetailsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    movie.overview.isNotEmpty ? movie.overview : 'No overview available.',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      height: 1.5,
-                    ),
+                    movie.overview.isNotEmpty
+                        ? movie.overview
+                        : 'No overview available.',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(height: 1.5),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Movie Stats
                   Text(
                     'Movie Stats',
@@ -312,7 +306,7 @@ class TMDBMovieDetailsPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 32),
                 ],
               ),
@@ -347,8 +341,18 @@ class TMDBMovieDetailsPage extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }

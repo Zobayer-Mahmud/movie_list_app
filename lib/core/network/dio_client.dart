@@ -18,7 +18,8 @@ class DioClient extends g.GetxService {
 
   Future<DioClient> init() async {
     // Get bearer token from environment (private)
-    final bearerToken = dotenv.env['TMDB_BEARER_TOKEN'] ??
+    final bearerToken =
+        dotenv.env['TMDB_BEARER_TOKEN'] ??
         'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNWM3MzllZjQyMmIxZTgzYWU0NTE1MmNhZmJhMDA0NyIsIm5iZiI6MTc1MjYwMjQ5MC4yODksInN1YiI6IjY4NzY5NzdhODQzNzZiOGE5ODg5NjI2NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.hoxnMardhsWUqGUdJ7PFAjXBOO1RK0TsgLj8_J-2hSo';
 
     _header = {
