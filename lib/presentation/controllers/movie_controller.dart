@@ -282,6 +282,36 @@ class MovieController extends GetxController {
   List<Movie> get regularMovies =>
       movies.where((movie) => !movie.isFavorite).toList();
 
+  // Clear all movies from storage and memory
+  Future<void> clearAllMovies() async {
+    try {
+      // Get all movie IDs
+      final movieIds = movies.map((movie) => movie.id).toList();
+
+      // Delete each movie individually to ensure proper cleanup
+      for (final movieId in movieIds) {
+        await _deleteMovie(movieId);
+      }
+
+      // Clear the observable list
+      movies.clear();
+
+      Get.snackbar(
+        'Success',
+        'All movies cleared successfully',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 3),
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to clear all movies: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 3),
+      );
+    }
+  }
+
   @override
   void onClose() {
     titleController.dispose();

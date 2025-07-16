@@ -398,30 +398,268 @@ class SettingsPage extends StatelessWidget {
   }
 
   void _showClearDataDialog(BuildContext context, MovieController controller) {
+    final confirmationController = TextEditingController();
+    final canDelete = false.obs;
+    final tmdbController = Get.find<TMDBController>();
+
     Get.dialog(
       AlertDialog(
         title: const Text('Clear All Data'),
-        content: const Text(
-          'Are you sure you want to delete all movies?\n\nThis action cannot be undone and will remove all your movies and their images.',
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'This will permanently delete:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+
+              // Personal Data Section
+              Obx(
+                () => Row(
+                  children: [
+                    const Icon(Icons.movie, size: 20, color: Colors.red),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '${controller.movies.length} movies and their data',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Obx(
+                () => Row(
+                  children: [
+                    const Icon(Icons.favorite, size: 20, color: Colors.red),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '${controller.favoriteMovies.length} favorite movies',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Row(
+                children: [
+                  Icon(Icons.image, size: 20, color: Colors.red),
+                  SizedBox(width: 8),
+                  Expanded(child: Text('All uploaded movie images')),
+                ],
+              ),
+
+              const SizedBox(height: 12),
+              const Divider(),
+              const SizedBox(height: 8),
+
+              // TMDB Cache Section
+              const Text(
+                'TMDB Cached Data:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Obx(
+                () => Row(
+                  children: [
+                    const Icon(Icons.trending_up, size: 20, color: Colors.red),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '${tmdbController.popularMovies.length} popular movies',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 4),
+              Obx(
+                () => Row(
+                  children: [
+                    const Icon(
+                      Icons.local_fire_department,
+                      size: 20,
+                      color: Colors.red,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '${tmdbController.trendingMovies.length} trending movies',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 4),
+              Obx(
+                () => Row(
+                  children: [
+                    const Icon(Icons.star, size: 20, color: Colors.red),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '${tmdbController.topRatedMovies.length} top rated movies',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 4),
+              Obx(
+                () => Row(
+                  children: [
+                    const Icon(Icons.upcoming, size: 20, color: Colors.red),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '${tmdbController.upcomingMovies.length} upcoming movies',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Colors.orange.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.warning, color: Colors.orange),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'This action cannot be undone!',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Type "DELETE" to confirm:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: confirmationController,
+                decoration: const InputDecoration(
+                  hintText: 'Type DELETE here',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  canDelete.value = value.toUpperCase() == 'DELETE';
+                },
+              ),
+            ],
+          ),
         ),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
+              confirmationController.dispose();
               Get.back();
-              // Clear all movies (this would need to be implemented in the controller)
-              Get.snackbar(
-                'Feature Coming Soon',
-                'Clear all data functionality will be added in a future update',
-                snackPosition: SnackPosition.BOTTOM,
-              );
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete All'),
+            child: const Text('Cancel'),
+          ),
+          Obx(
+            () => TextButton(
+              onPressed: canDelete.value
+                  ? () {
+                      confirmationController.dispose();
+                      Get.back();
+                      _clearAllData(controller);
+                    }
+                  : null,
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Delete Everything'),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _clearAllData(MovieController movieController) async {
+    try {
+      // Show loading dialog
+      Get.dialog(
+        const AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text('Clearing all data...'),
+            ],
+          ),
+        ),
+        barrierDismissible: false,
+      );
+
+      // Clear personal movie data
+      await movieController.clearAllMovies();
+
+      // Clear TMDB cache
+      final cacheService = getIt<TMDBCacheService>();
+      await cacheService.clearAllCache();
+
+      // Clear TMDB controller data in memory
+      final tmdbController = Get.find<TMDBController>();
+      tmdbController.popularMovies.clear();
+      tmdbController.trendingMovies.clear();
+      tmdbController.topRatedMovies.clear();
+      tmdbController.upcomingMovies.clear();
+      tmdbController.searchResults.clear();
+      tmdbController.movieCast.clear();
+      tmdbController.movieVideos.clear();
+
+      // Close loading dialog
+      Get.back();
+
+      // Show success message
+      Get.snackbar(
+        'Success',
+        'All data cleared successfully. The app will restart with fresh data.',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 4),
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+
+      // Optionally restart data loading
+      Future.delayed(const Duration(seconds: 1), () {
+        tmdbController.refreshAllData();
+      });
+    } catch (e) {
+      // Close loading dialog if still open
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+
+      Get.snackbar(
+        'Error',
+        'Failed to clear all data: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 4),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 
   void _showAboutDialog(BuildContext context) {
