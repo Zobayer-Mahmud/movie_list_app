@@ -19,204 +19,158 @@ class MovieDetailsPage extends StatelessWidget {
     final movieController = Get.find<MovieController>();
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       body: CustomScrollView(
         slivers: [
+          // Classic App Bar with Hero Image
           SliverAppBar(
-            expandedHeight: 300,
+            expandedHeight: 350,
             pinned: true,
-            backgroundColor: Colors.transparent,
+            backgroundColor: theme.colorScheme.surface,
+            foregroundColor: theme.colorScheme.onSurface,
             elevation: 0,
             leading: Container(
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  width: 1,
-                ),
+                color: theme.colorScheme.surface.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 3),
+                    color: Colors.black26,
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: IconButton(
-                    onPressed: () => Get.back(),
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    padding: EdgeInsets.zero,
-                    splashRadius: 20,
-                    tooltip: 'Go back',
-                  ),
+              child: IconButton(
+                onPressed: () => Get.back(),
+                icon: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: theme.colorScheme.onSurface,
+                  size: 20,
                 ),
+                tooltip: 'Go back',
               ),
             ),
             flexibleSpace: FlexibleSpaceBar(
-              background: _buildMoviePoster(context),
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Hero Image
+                  _buildClassicHeroSection(context),
+                  // Gradient Overlay
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.transparent,
+                          theme.colorScheme.surface.withOpacity(0.8),
+                          theme.colorScheme.surface,
+                        ],
+                        stops: const [0.0, 0.4, 0.8, 1.0],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             actions: [
               Container(
                 margin: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.7),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
+                  color: theme.colorScheme.surface.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 3),
+                      color: Colors.black26,
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: IconButton(
-                      onPressed: () => movieController.toggleFavorite(movie.id),
-                      icon: Obx(() {
-                        final currentMovie = movieController.movies
-                            .firstWhereOrNull((m) => m.id == movie.id);
-                        return Icon(
-                          currentMovie?.isFavorite ?? movie.isFavorite
-                              ? Icons.favorite
-                              : Icons.favorite_border,
-                          color: currentMovie?.isFavorite ?? movie.isFavorite
-                              ? Colors.red
-                              : Colors.white,
-                          size: 24,
-                        );
-                      }),
-                      padding: EdgeInsets.zero,
-                      splashRadius: 20,
-                      tooltip: 'Toggle favorite',
+                child: Obx(() {
+                  final currentMovie = movieController.movies.firstWhereOrNull(
+                    (m) => m.id == movie.id,
+                  );
+                  final isFavorite =
+                      currentMovie?.isFavorite ?? movie.isFavorite;
+                  return IconButton(
+                    onPressed: () => movieController.toggleFavorite(movie.id),
+                    icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: isFavorite
+                          ? Colors.red
+                          : theme.colorScheme.onSurface,
+                      size: 24,
                     ),
+                    tooltip: 'Toggle favorite',
+                  );
+                }),
+              ),
+              Container(
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  onPressed: () => Get.toNamed('/edit-movie', arguments: movie),
+                  icon: Icon(
+                    Icons.edit_outlined,
+                    color: theme.colorScheme.onSurface,
+                    size: 22,
                   ),
+                  tooltip: 'Edit movie',
                 ),
               ),
             ],
           ),
+
+          // Classic Content Section
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title and Year
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          movie.title,
-                          style: theme.textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      if (movie.releaseYear != null)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            '${movie.releaseYear}',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.colorScheme.onPrimaryContainer,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Classic Title Section
+                    _buildClassicTitleSection(context),
 
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 24),
 
-                  // Rating and Watch Status Row
-                  Row(
-                    children: [
-                      if (movie.rating > 0) ...[
-                        StarRating(rating: movie.rating, size: 24),
-                        const SizedBox(width: 8),
-                        Text(
-                          '${movie.rating.toStringAsFixed(1)}/5.0',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                      ],
-                      Obx(() {
-                        final currentMovie = movieController.movies
-                            .firstWhereOrNull((m) => m.id == movie.id);
-                        final isWatched =
-                            currentMovie?.isWatched ?? movie.isWatched;
+                    // Movie Stats Row
+                    _buildMovieStatsRow(context),
 
-                        return WatchStatusBadge(
-                          isWatched: isWatched,
-                          showText: true,
-                        );
-                      }),
-                    ],
-                  ),
+                    const SizedBox(height: 32),
 
-                  const SizedBox(height: 16),
+                    // Description Section
+                    _buildDescriptionSection(context),
 
-                  // Genre
-                  if (movie.genre != null) ...[
-                    Text(
-                      'Genre',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    GenreBadge(genre: movie.genre!),
+                    const SizedBox(height: 32),
+
+                    // Action Buttons
+                    _buildActionButtons(context, movieController),
+
                     const SizedBox(height: 24),
                   ],
-
-                  // Description
-                  Text(
-                    'Description',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    movie.description,
-                    style: theme.textTheme.bodyLarge?.copyWith(height: 1.6),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  // Movie Info Cards
-                  _buildInfoCards(context, movie),
-
-                  const SizedBox(height: 24),
-
-                  // Action Buttons
-                  _buildActionButtons(context, movie, movieController),
-                ],
+                ),
               ),
             ),
           ),
@@ -225,7 +179,7 @@ class MovieDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMoviePoster(BuildContext context) {
+  Widget _buildClassicHeroSection(BuildContext context) {
     if (movie.imagePath != null) {
       return Stack(
         fit: StackFit.expand,
@@ -234,19 +188,18 @@ class MovieDetailsPage extends StatelessWidget {
             File(movie.imagePath!),
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              return _buildPlaceholderPoster(context);
+              return _buildPlaceholderHero(context);
             },
           ),
-          // Gradient overlay
+          // Subtle overlay for classic look
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.transparent,
+                  Colors.black.withOpacity(0.1),
                   Colors.black.withOpacity(0.3),
-                  Colors.black.withOpacity(0.7),
                 ],
               ),
             ),
@@ -254,10 +207,10 @@ class MovieDetailsPage extends StatelessWidget {
         ],
       );
     }
-    return _buildPlaceholderPoster(context);
+    return _buildPlaceholderHero(context);
   }
 
-  Widget _buildPlaceholderPoster(BuildContext context) {
+  Widget _buildPlaceholderHero(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
@@ -273,81 +226,151 @@ class MovieDetailsPage extends StatelessWidget {
       child: Center(
         child: Icon(
           Icons.movie,
-          size: 80,
-          color: theme.colorScheme.onPrimaryContainer.withOpacity(0.7),
+          size: 100,
+          color: theme.colorScheme.onPrimaryContainer.withOpacity(0.6),
         ),
       ),
     );
   }
 
-  Widget _buildInfoCards(BuildContext context, Movie movie) {
-    return Row(
+  Widget _buildClassicTitleSection(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: _buildInfoCard(
-            context,
-            'Added',
-            _formatDate(movie.createdAt),
-            Icons.calendar_today,
+        // Movie Title
+        Text(
+          movie.title,
+          style: theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.onSurface,
+            height: 1.2,
           ),
         ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildInfoCard(
-            context,
-            'Status',
-            movie.isWatched ? 'Watched' : 'To Watch',
-            movie.isWatched ? Icons.visibility : Icons.visibility_off,
+
+        const SizedBox(height: 8),
+
+        // Release Year
+        if (movie.releaseYear != null) ...[
+          Text(
+            '${movie.releaseYear}',
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+
+        // Genre
+        if (movie.genre != null) ...[
+          GenreBadge(genre: movie.genre!),
+          const SizedBox(height: 16),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildMovieStatsRow(BuildContext context) {
+    final theme = Theme.of(context);
+    final movieController = Get.find<MovieController>();
+
+    return Row(
+      children: [
+        // Rating
+        if (movie.rating > 0) ...[
+          StarRating(rating: movie.rating, size: 20),
+          const SizedBox(width: 8),
+          Text(
+            '${movie.rating.toStringAsFixed(1)}',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Container(
+            width: 1,
+            height: 20,
+            color: theme.colorScheme.outline.withOpacity(0.3),
+          ),
+          const SizedBox(width: 16),
+        ],
+
+        // Watch Status
+        Obx(() {
+          final currentMovie = movieController.movies.firstWhereOrNull(
+            (m) => m.id == movie.id,
+          );
+          final isWatched = currentMovie?.isWatched ?? movie.isWatched;
+
+          return Row(
+            children: [
+              Icon(
+                isWatched ? Icons.visibility : Icons.visibility_off,
+                size: 20,
+                color: isWatched
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                isWatched ? 'Watched' : 'To Watch',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: isWatched
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          );
+        }),
+
+        const Spacer(),
+
+        // Added Date
+        Text(
+          _formatDate(movie.createdAt),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildInfoCard(
-    BuildContext context,
-    String label,
-    String value,
-    IconData icon,
-  ) {
+  Widget _buildDescriptionSection(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: theme.colorScheme.primary, size: 24),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Overview',
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.onSurface,
           ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-            textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 12),
+        Text(
+          movie.description,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            height: 1.6,
+            color: theme.colorScheme.onSurfaceVariant,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget _buildActionButtons(
-    BuildContext context,
-    Movie movie,
-    MovieController controller,
-  ) {
+  Widget _buildActionButtons(BuildContext context, MovieController controller) {
+    final theme = Theme.of(context);
+
     return Column(
       children: [
+        // Watch Status Button
         SizedBox(
           width: double.infinity,
           child: Obx(() {
@@ -356,84 +379,57 @@ class MovieDetailsPage extends StatelessWidget {
             );
             final isWatched = currentMovie?.isWatched ?? movie.isWatched;
 
-            return Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  colors: isWatched
-                      ? [
-                          Theme.of(context).colorScheme.secondary,
-                          Theme.of(
-                            context,
-                          ).colorScheme.secondary.withValues(alpha: 0.8),
-                        ]
-                      : [
-                          Theme.of(context).colorScheme.primary,
-                          Theme.of(
-                            context,
-                          ).colorScheme.primary.withValues(alpha: 0.8),
-                        ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color:
-                        (isWatched
-                                ? Theme.of(context).colorScheme.secondary
-                                : Theme.of(context).colorScheme.primary)
-                            .withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+            return ElevatedButton.icon(
+              onPressed: () => controller.toggleWatchStatus(movie.id),
+              icon: Icon(
+                isWatched ? Icons.visibility_off : Icons.visibility,
+                size: 20,
               ),
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  controller.toggleWatchStatus(movie.id);
-                },
-                icon: Icon(
-                  isWatched ? Icons.visibility_off : Icons.visibility,
-                  size: 24,
+              label: Text(
+                isWatched ? 'Mark as Unwatched' : 'Mark as Watched',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
-                label: Text(
-                  isWatched ? 'Mark as Unwatched' : 'Mark as Watched',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isWatched
+                    ? theme.colorScheme.secondary
+                    : theme.colorScheme.primary,
+                foregroundColor: isWatched
+                    ? theme.colorScheme.onSecondary
+                    : theme.colorScheme.onPrimary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
+                elevation: 2,
               ),
             );
           }),
         ),
+
         const SizedBox(height: 12),
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () {
-              Get.toNamed('/edit-movie', arguments: movie);
-            },
-            icon: const Icon(Icons.edit),
-            label: const Text('Edit Movie'),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ),
+
+        // Edit Button
+        // SizedBox(
+        //   width: double.infinity,
+        //   child: OutlinedButton.icon(
+        //     onPressed: () => Get.toNamed('/edit-movie', arguments: movie),
+        //     icon: const Icon(Icons.edit_outlined, size: 20),
+        //     label: const Text(
+        //       'Edit Movie',
+        //       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        //     ),
+        //     style: OutlinedButton.styleFrom(
+        //       padding: const EdgeInsets.symmetric(vertical: 16),
+        //       shape: RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.circular(12),
+        //       ),
+        //       side: BorderSide(color: theme.colorScheme.outline, width: 1.5),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
