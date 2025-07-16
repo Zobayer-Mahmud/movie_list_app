@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:get/get.dart';
 import '../../core/services/tmdb_api_service.dart';
 import '../../data/models/tmdb_movie_model.dart';
+import '../../data/models/tmdb_cast_model.dart';
+import '../../data/models/tmdb_video_model.dart';
 
 class TMDBController extends GetxController {
   final TMDBApiService _tmdbService = TMDBApiService();
@@ -12,6 +14,10 @@ class TMDBController extends GetxController {
   final topRatedMovies = <TMDBMovie>[].obs;
   final upcomingMovies = <TMDBMovie>[].obs;
   final searchResults = <TMDBMovie>[].obs;
+
+  // Movie details data
+  final movieCast = <TMDBCast>[].obs;
+  final movieVideos = <TMDBVideo>[].obs;
 
   // Loading states
   final isLoadingPopular = false.obs;
@@ -195,6 +201,46 @@ class TMDBController extends GetxController {
     hasSearched.value = false;
     searchError.value = '';
     isLoadingSearch.value = false;
+  }
+
+  // Load movie cast
+  Future<void> loadMovieCast(int movieId) async {
+    try {
+      final response = await _tmdbService.getMovieCredits(movieId);
+      if (response != null) {
+        movieCast.value = response.cast
+            .take(10)
+            .toList(); // Show top 10 cast members
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to load movie cast: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  // Load movie videos (trailers)
+  Future<void> loadMovieVideos(int movieId) async {
+    try {
+      final response = await _tmdbService.getMovieVideos(movieId);
+      if (response != null) {
+        movieVideos.value = response.trailers; // Only get trailers
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to load movie videos: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  // Clear movie details data
+  void clearMovieDetails() {
+    movieCast.clear();
+    movieVideos.clear();
   }
 
   @override

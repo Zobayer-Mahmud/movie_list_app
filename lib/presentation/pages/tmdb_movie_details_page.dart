@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../data/models/tmdb_movie_model.dart';
 import '../../core/constants/tmdb_constants.dart';
+import '../controllers/tmdb_controller.dart';
+import '../widgets/cast_card.dart';
+import '../widgets/trailer_card.dart';
 
 class TMDBMovieDetailsPage extends StatelessWidget {
   final TMDBMovie movie;
@@ -11,6 +14,14 @@ class TMDBMovieDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tmdbController = Get.find<TMDBController>();
+
+    // Load movie details when page loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      tmdbController.loadMovieCast(movie.id);
+      tmdbController.loadMovieVideos(movie.id);
+    });
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -308,6 +319,16 @@ class TMDBMovieDetailsPage extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 32),
+
+                  // Cast Section
+                  _buildCastSection(tmdbController),
+
+                  const SizedBox(height: 32),
+
+                  // Trailers Section
+                  _buildTrailersSection(tmdbController),
+
+                  const SizedBox(height: 32),
                 ],
               ),
             ),
@@ -337,6 +358,68 @@ class TMDBMovieDetailsPage extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildCastSection(TMDBController controller) {
+    return Obx(() {
+      if (controller.movieCast.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Cast',
+            style: Theme.of(
+              Get.context!,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 140,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.movieCast.length,
+              itemBuilder: (context, index) {
+                return CastCard(cast: controller.movieCast[index]);
+              },
+            ),
+          ),
+        ],
+      );
+    });
+  }
+
+  Widget _buildTrailersSection(TMDBController controller) {
+    return Obx(() {
+      if (controller.movieVideos.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Trailers',
+            style: Theme.of(
+              Get.context!,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 180,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.movieVideos.length,
+              itemBuilder: (context, index) {
+                return TrailerCard(video: controller.movieVideos[index]);
+              },
+            ),
+          ),
+        ],
+      );
+    });
   }
 
   String _formatDate(DateTime date) {

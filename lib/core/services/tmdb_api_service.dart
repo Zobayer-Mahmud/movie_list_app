@@ -1,6 +1,10 @@
 import '../network/dio_client.dart';
 import '../../data/models/tmdb_movie_response.dart';
 import '../../data/models/tmdb_movie_model.dart';
+import '../../data/models/tmdb_cast_model.dart';
+import '../../data/models/tmdb_video_model.dart';
+import '../../data/models/tmdb_cast_model.dart';
+import '../../data/models/tmdb_video_model.dart';
 
 class TMDBApiService {
   final DioClient _dioClient = DioClient.to;
@@ -124,6 +128,38 @@ class TMDBApiService {
       return null;
     } catch (e) {
       print('Error fetching now playing movies: $e');
+      return null;
+    }
+  }
+
+  // Get movie credits (cast and crew)
+  Future<TMDBCreditsResponse?> getMovieCredits(int movieId) async {
+    try {
+      final response = await _dioClient.get(
+        endpoint: '/movie/$movieId/credits',
+      );
+
+      if (response.isSuccess && response.data != null) {
+        return TMDBCreditsResponse.fromJson(response.data);
+      }
+      return null;
+    } catch (e) {
+      print('Error fetching movie credits: $e');
+      return null;
+    }
+  }
+
+  // Get movie videos (trailers, teasers, etc.)
+  Future<TMDBVideosResponse?> getMovieVideos(int movieId) async {
+    try {
+      final response = await _dioClient.get(endpoint: '/movie/$movieId/videos');
+
+      if (response.isSuccess && response.data != null) {
+        return TMDBVideosResponse.fromJson(response.data);
+      }
+      return null;
+    } catch (e) {
+      print('Error fetching movie videos: $e');
       return null;
     }
   }

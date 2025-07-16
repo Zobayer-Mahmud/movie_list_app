@@ -16,6 +16,11 @@ class TMDBConstants {
   static const String backdropSizeW780 = 'https://image.tmdb.org/t/p/w780';
   static const String backdropSizeW1280 = 'https://image.tmdb.org/t/p/w1280';
 
+  // Profile sizes (for cast photos)
+  static const String profileSizeW45 = 'https://image.tmdb.org/t/p/w45';
+  static const String profileSizeW185 = 'https://image.tmdb.org/t/p/w185';
+  static const String profileSizeW632 = 'https://image.tmdb.org/t/p/w632';
+
   // API Endpoints
   static const String popularMoviesEndpoint = '/movie/popular';
   static const String topRatedMoviesEndpoint = '/movie/top_rated';
