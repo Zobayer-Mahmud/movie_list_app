@@ -4,7 +4,6 @@ import '../controllers/search_controller.dart' as search_controller;
 import '../controllers/movie_controller.dart';
 import '../widgets/movie_card.dart';
 import '../widgets/empty_state_widget.dart';
-import '../widgets/theme_toggle_button.dart';
 import '../widgets/advanced_filter_sheet.dart';
 import '../../core/constants/app_enums.dart';
 
@@ -38,7 +37,6 @@ class _SearchPageState extends State<SearchPage> {
             icon: const Icon(Icons.tune),
             tooltip: 'Advanced Filters',
           ),
-          const ThemeToggleButton(),
         ],
       ),
       body: Column(

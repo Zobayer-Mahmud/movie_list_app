@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/tmdb_controller.dart';
 import '../widgets/tmdb_movie_card.dart';
-import '../widgets/theme_toggle_button.dart';
 
 class TMDBDiscoveryPage extends StatelessWidget {
   const TMDBDiscoveryPage({super.key});
@@ -20,7 +19,6 @@ class TMDBDiscoveryPage extends StatelessWidget {
             onPressed: () => Get.toNamed('/tmdb-search'),
             tooltip: 'Search TMDB',
           ),
-          const ThemeToggleButton(),
         ],
       ),
       body: DefaultTabController(

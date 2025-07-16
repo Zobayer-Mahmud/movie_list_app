@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../domain/entities/movie.dart';
 import '../widgets/star_rating.dart';
-import '../widgets/watch_status.dart';
 import '../widgets/genre_badge.dart';
 import '../controllers/movie_controller.dart';
 

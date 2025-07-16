@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../controllers/movie_controller.dart';
 import '../widgets/movie_card.dart';
 import '../widgets/empty_state_widget.dart';
-import '../widgets/theme_toggle_button.dart';
 
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({super.key});
@@ -16,7 +15,6 @@ class FavoritesPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Favorite Movies'),
         actions: [
-          const ThemeToggleButton(),
           IconButton(
             onPressed: movieController.loadMovies,
             icon: const Icon(Icons.refresh),

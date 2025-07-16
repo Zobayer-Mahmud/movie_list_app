@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/tmdb_controller.dart';
 import '../widgets/tmdb_movie_card.dart';
-import '../widgets/theme_toggle_button.dart';
 
 class TMDBSearchPage extends StatefulWidget {
   const TMDBSearchPage({super.key});
@@ -38,10 +37,7 @@ class _TMDBSearchPageState extends State<TMDBSearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search Movies'),
-        actions: [const ThemeToggleButton()],
-      ),
+      appBar: AppBar(title: const Text('Search Movies')),
       body: Column(
         children: [
           // Enhanced search bar

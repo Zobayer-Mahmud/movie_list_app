@@ -91,8 +91,8 @@ class MainNavigationPage extends StatelessWidget {
         () => IndexedStack(
           index: navController.selectedIndex.value,
           children: [
-            MovieListPage(),
-            TMDBDiscoveryPage(), // TMDB Discovery tab
+            TMDBDiscoveryPage(), // TMDB Discovery tab - moved to first
+            MovieListPage(), // Movies - moved to second
             FavoritesPage(),
             SearchPage(),
             SettingsPage(),
@@ -107,11 +107,11 @@ class MainNavigationPage extends StatelessWidget {
             navController.selectedIndex.value = index;
           },
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.movie), label: 'Movies'),
             BottomNavigationBarItem(
               icon: Icon(Icons.explore),
               label: 'Discover',
             ),
+            BottomNavigationBarItem(icon: Icon(Icons.movie), label: 'Movies'),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
               label: 'Favorites',

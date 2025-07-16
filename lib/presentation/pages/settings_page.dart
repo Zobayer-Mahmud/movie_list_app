@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/theme_controller.dart';
 import '../controllers/movie_controller.dart';
-import '../widgets/theme_toggle_button.dart';
+import '../controllers/theme_controller.dart';
 import '../../core/constants/app_constants.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -14,10 +13,7 @@ class SettingsPage extends StatelessWidget {
     final movieController = Get.find<MovieController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        actions: const [ThemeToggleButton()],
-      ),
+      appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

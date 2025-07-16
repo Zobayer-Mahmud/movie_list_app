@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../../domain/entities/movie.dart';
 import '../controllers/movie_controller.dart';
 import '../widgets/custom_text_field.dart';
-import '../widgets/theme_toggle_button.dart';
 import '../widgets/genre_selector.dart';
 import '../widgets/image_picker_widget.dart';
 import '../widgets/star_rating.dart';
@@ -55,10 +54,7 @@ class _EditMoviePageState extends State<EditMoviePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Movie'),
-        actions: const [ThemeToggleButton()],
-      ),
+      appBar: AppBar(title: const Text('Edit Movie')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

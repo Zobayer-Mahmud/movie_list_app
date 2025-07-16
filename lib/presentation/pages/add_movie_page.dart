@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/movie_controller.dart';
 import '../widgets/custom_text_field.dart';
-import '../widgets/theme_toggle_button.dart';
 import '../widgets/genre_selector.dart';
 import '../widgets/image_picker_widget.dart';
 import '../widgets/star_rating.dart';
@@ -17,10 +16,7 @@ class AddMoviePage extends StatelessWidget {
     final MovieController controller = Get.find<MovieController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Movie'),
-        actions: const [ThemeToggleButton()],
-      ),
+      appBar: AppBar(title: const Text('Add Movie')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

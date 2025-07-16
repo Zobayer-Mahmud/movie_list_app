@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/movie_controller.dart';
-import '../widgets/theme_toggle_button.dart';
 import '../../core/constants/app_enums.dart';
 
 class StatisticsPage extends StatelessWidget {
@@ -15,7 +14,6 @@ class StatisticsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Statistics'),
         actions: [
-          const ThemeToggleButton(),
           IconButton(
             onPressed: movieController.loadMovies,
             icon: const Icon(Icons.refresh),

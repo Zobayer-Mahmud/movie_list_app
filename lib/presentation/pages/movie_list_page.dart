@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/movie_controller.dart';
 import '../controllers/search_controller.dart' as search_controller;
-import '../widgets/theme_toggle_button.dart';
 import 'add_movie_page.dart';
 
 class MovieListPage extends StatefulWidget {
@@ -132,9 +131,6 @@ class _MovieListPageState extends State<MovieListPage>
             onPressed: () => _isGridView.value = !_isGridView.value,
           ),
         ),
-
-        // Theme Toggle
-        const ThemeToggleButton(),
         const SizedBox(width: 8),
       ],
     );
