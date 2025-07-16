@@ -1,17 +1,49 @@
-class TMDBMovie {
+import 'package:hive/hive.dart';
+
+part 'tmdb_movie_model.g.dart';
+
+@HiveType(typeId: 12)
+class TMDBMovie extends HiveObject {
+  @HiveField(0)
   final int id;
+
+  @HiveField(1)
   final String title;
+
+  @HiveField(2)
   final String overview;
+
+  @HiveField(3)
   final String? posterPath;
+
+  @HiveField(4)
   final String? backdropPath;
+
+  @HiveField(5)
   final DateTime releaseDate;
+
+  @HiveField(6)
   final double voteAverage;
+
+  @HiveField(7)
   final int voteCount;
+
+  @HiveField(8)
   final List<int> genreIds;
+
+  @HiveField(9)
   final bool adult;
+
+  @HiveField(10)
   final String originalLanguage;
+
+  @HiveField(11)
   final String originalTitle;
+
+  @HiveField(12)
   final double popularity;
+
+  @HiveField(13)
   final bool video;
 
   TMDBMovie({

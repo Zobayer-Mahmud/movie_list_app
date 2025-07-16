@@ -18,8 +18,7 @@ class TMDBMovieDetailsPage extends StatelessWidget {
 
     // Load movie details when page loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      tmdbController.loadMovieCast(movie.id);
-      tmdbController.loadMovieVideos(movie.id);
+      tmdbController.loadMovieDetails(movie.id, movie);
     });
 
     return Scaffold(

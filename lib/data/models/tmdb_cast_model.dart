@@ -1,8 +1,22 @@
-class TMDBCast {
+import 'package:hive/hive.dart';
+
+part 'tmdb_cast_model.g.dart';
+
+@HiveType(typeId: 13)
+class TMDBCast extends HiveObject {
+  @HiveField(0)
   final int id;
+
+  @HiveField(1)
   final String name;
+
+  @HiveField(2)
   final String character;
+
+  @HiveField(3)
   final String? profilePath;
+
+  @HiveField(4)
   final int order;
 
   TMDBCast({

@@ -79,6 +79,23 @@ class MockMovieRepository extends _i1.Mock implements _i3.MovieRepository {
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
 
   @override
+  _i4.Future<_i2.Either<_i5.Failure, void>> updateMovie(_i6.Movie? movie) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateMovie,
+          [movie],
+        ),
+        returnValue: _i4.Future<_i2.Either<_i5.Failure, void>>.value(
+            _FakeEither_0<_i5.Failure, void>(
+          this,
+          Invocation.method(
+            #updateMovie,
+            [movie],
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
+
+  @override
   _i4.Future<_i2.Either<_i5.Failure, void>> deleteMovie(String? id) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -107,6 +124,23 @@ class MockMovieRepository extends _i1.Mock implements _i3.MovieRepository {
           this,
           Invocation.method(
             #toggleFavorite,
+            [id],
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
+
+  @override
+  _i4.Future<_i2.Either<_i5.Failure, void>> toggleWatchStatus(String? id) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #toggleWatchStatus,
+          [id],
+        ),
+        returnValue: _i4.Future<_i2.Either<_i5.Failure, void>>.value(
+            _FakeEither_0<_i5.Failure, void>(
+          this,
+          Invocation.method(
+            #toggleWatchStatus,
             [id],
           ),
         )),

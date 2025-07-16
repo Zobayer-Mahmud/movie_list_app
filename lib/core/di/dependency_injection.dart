@@ -19,6 +19,11 @@ import '../../presentation/controllers/navigation_controller.dart';
 import '../../presentation/controllers/tmdb_controller.dart';
 import '../../presentation/controllers/search_controller.dart'
     as search_controller;
+import '../../data/services/tmdb_cache_service.dart';
+import '../../data/models/tmdb_movie_model.dart';
+import '../../data/models/tmdb_cast_model.dart';
+import '../../data/models/tmdb_video_model.dart';
+import '../../data/models/tmdb/tmdb_cache_data.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 final GetIt getIt = GetIt.instance;
@@ -35,8 +40,30 @@ class DependencyInjection {
       Hive.registerAdapter(MovieModelAdapter());
     }
 
+    // Register TMDB cache adapters
+    if (!Hive.isAdapterRegistered(10)) {
+      Hive.registerAdapter(TMDBCacheDataAdapter());
+    }
+    if (!Hive.isAdapterRegistered(11)) {
+      Hive.registerAdapter(TMDBMovieDetailsCacheAdapter());
+    }
+    if (!Hive.isAdapterRegistered(12)) {
+      Hive.registerAdapter(TMDBMovieAdapter());
+    }
+    if (!Hive.isAdapterRegistered(13)) {
+      Hive.registerAdapter(TMDBCastAdapter());
+    }
+    if (!Hive.isAdapterRegistered(14)) {
+      Hive.registerAdapter(TMDBVideoAdapter());
+    }
+
     // Initialize local storage
     await getIt<LocalStorageClient>().init();
+
+    // Initialize TMDB cache service
+    final cacheService = TMDBCacheService();
+    await cacheService.init();
+    getIt.registerSingleton<TMDBCacheService>(cacheService);
 
     // Data sources
     getIt.registerLazySingleton<MovieLocalDataSource>(

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/movie_controller.dart';
 import '../controllers/theme_controller.dart';
+import '../controllers/tmdb_controller.dart';
 import '../../core/constants/app_constants.dart';
+import '../../data/services/tmdb_cache_service.dart';
+import '../../core/di/dependency_injection.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -308,6 +311,8 @@ class SettingsPage extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
+                const Divider(height: 1),
+                _buildCacheManagementTile(context),
               ],
             ),
           ),
@@ -440,5 +445,162 @@ class SettingsPage extends StatelessWidget {
         const Text('• Dark/Light theme support'),
       ],
     );
+  }
+
+  Widget _buildCacheManagementTile(BuildContext context) {
+    final tmdbController = Get.find<TMDBController>();
+    final cacheService = getIt<TMDBCacheService>();
+
+    return ExpansionTile(
+      leading: const Icon(Icons.cached),
+      title: const Text('TMDB Cache'),
+      subtitle: Obx(
+        () => Text(
+          tmdbController.isOnline.value
+              ? 'Online - Cache enabled'
+              : 'Offline - Using cached data',
+        ),
+      ),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Cache helps load movie data faster and enables offline viewing.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 16),
+
+              // Cache Status
+              FutureBuilder<Map<String, dynamic>>(
+                future: _getCacheStatus(cacheService),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  final cacheStatus = snapshot.data!;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Cache Status:',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 8),
+                      _buildCacheStatusItem(
+                        'Popular Movies',
+                        cacheStatus['popularMovies'],
+                      ),
+                      _buildCacheStatusItem(
+                        'Trending Movies',
+                        cacheStatus['trendingMovies'],
+                      ),
+                      _buildCacheStatusItem(
+                        'Top Rated Movies',
+                        cacheStatus['topRatedMovies'],
+                      ),
+                      _buildCacheStatusItem(
+                        'Upcoming Movies',
+                        cacheStatus['upcomingMovies'],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Movie Details Cache: ${cacheStatus['totalDetailsCache']} items',
+                      ),
+                    ],
+                  );
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              // Cache Actions
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _refreshCache(tmdbController),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Refresh Cache'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _clearCache(cacheService),
+                      icon: const Icon(Icons.clear_all),
+                      label: const Text('Clear Cache'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCacheStatusItem(String title, Map<String, dynamic> status) {
+    final isCached = status['cached'] as bool;
+    final count = status['count'] as int;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          Icon(
+            isCached ? Icons.check_circle : Icons.radio_button_unchecked,
+            size: 16,
+            color: isCached ? Colors.green : Colors.grey,
+          ),
+          const SizedBox(width: 8),
+          Text('$title: ${isCached ? '$count items' : 'Not cached'}'),
+        ],
+      ),
+    );
+  }
+
+  Future<Map<String, dynamic>> _getCacheStatus(
+    TMDBCacheService cacheService,
+  ) async {
+    return cacheService.getCacheStatus();
+  }
+
+  Future<void> _refreshCache(TMDBController tmdbController) async {
+    try {
+      await tmdbController.refreshAllData();
+      Get.snackbar(
+        'Success',
+        'Cache refreshed successfully',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to refresh cache: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  Future<void> _clearCache(TMDBCacheService cacheService) async {
+    try {
+      await cacheService.clearAllCache();
+      Get.snackbar(
+        'Success',
+        'Cache cleared successfully',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to clear cache: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 }

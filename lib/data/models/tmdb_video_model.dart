@@ -1,9 +1,25 @@
-class TMDBVideo {
+import 'package:hive/hive.dart';
+
+part 'tmdb_video_model.g.dart';
+
+@HiveType(typeId: 14)
+class TMDBVideo extends HiveObject {
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String key;
+
+  @HiveField(2)
   final String name;
+
+  @HiveField(3)
   final String site;
+
+  @HiveField(4)
   final String type;
+
+  @HiveField(5)
   final int size;
 
   TMDBVideo({

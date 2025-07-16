@@ -12,8 +12,39 @@ class TMDBDiscoveryPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Discover Movies'),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Discover Movies'),
+            Obx(() {
+              if (!controller.isOnline.value) {
+                return const Text(
+                  'Offline - Showing cached data',
+                  style: TextStyle(fontSize: 12, color: Colors.orange),
+                );
+              } else if (controller.isLoadingFromCache.value) {
+                return const Text(
+                  'Loading from cache...',
+                  style: TextStyle(fontSize: 12, color: Colors.blue),
+                );
+              }
+              return const SizedBox.shrink();
+            }),
+          ],
+        ),
         actions: [
+          Obx(
+            () => IconButton(
+              icon: Icon(
+                Icons.refresh,
+                color: controller.isOnline.value ? null : Colors.grey,
+              ),
+              onPressed: controller.isOnline.value
+                  ? controller.refreshAllData
+                  : null,
+              tooltip: 'Refresh data',
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () => Get.toNamed('/tmdb-search'),
@@ -38,18 +69,22 @@ class TMDBDiscoveryPage extends StatelessWidget {
               child: TabBarView(
                 children: [
                   _buildMovieList(
+                    context,
                     controller.popularMovies,
                     controller.loadPopularMovies,
                   ),
                   _buildMovieList(
+                    context,
                     controller.trendingMovies,
                     controller.loadTrendingMovies,
                   ),
                   _buildMovieList(
+                    context,
                     controller.topRatedMovies,
                     controller.loadTopRatedMovies,
                   ),
                   _buildMovieList(
+                    context,
                     controller.upcomingMovies,
                     controller.loadUpcomingMovies,
                   ),
@@ -62,26 +97,48 @@ class TMDBDiscoveryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMovieList(RxList<dynamic> movies, Function() loadFunction) {
+  Widget _buildMovieList(
+    BuildContext context,
+    RxList<dynamic> movies,
+    Function() loadFunction,
+  ) {
+    final TMDBController controller = Get.find<TMDBController>();
+
     return Obx(() {
       if (movies.isEmpty) {
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: loadFunction,
-                child: const Text('Load Movies'),
+              Icon(
+                controller.isOnline.value ? Icons.movie : Icons.wifi_off,
+                size: 64,
+                color: Colors.grey,
               ),
+              const SizedBox(height: 16),
+              Text(
+                controller.isOnline.value
+                    ? 'Loading movies...'
+                    : 'No offline data available',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 16),
+              if (controller.isOnline.value)
+                const CircularProgressIndicator()
+              else
+                ElevatedButton(
+                  onPressed: controller.refreshAllData,
+                  child: const Text('Retry'),
+                ),
             ],
           ),
         );
       }
 
       return RefreshIndicator(
-        onRefresh: () async => loadFunction(),
+        onRefresh: () async {
+          await controller.refreshAllData();
+        },
         child: GridView.builder(
           padding: const EdgeInsets.all(16),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
